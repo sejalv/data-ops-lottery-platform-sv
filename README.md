@@ -1,23 +1,38 @@
 # Data Ops Lottery Platform - SV
 
-This project, as a solution to Zeal's Case Study, processes real-time user interactions with lottery games and aggregates into business metrics such as revenue, logins, payouts, and active users, on an hourly basis. 
-The pipeline includes data validation, Postgres DB for insights, and observability dashboards in Grafana, within a containerized, local setup.
+This project, as a solution to Zeal's Case Study, processes real-time user interactions with lottery games and aggregates into business metrics such as revenue, logins, payouts, and active users, on an hourly basis. The pipeline is Python-based, and includes data validation, Postgres DB for insights, and observability dashboards in Grafana, within a containerized, local setup.
+
+## Flow Diagram
+```
+   +------------------+            +----------------+
+   |  Event Producer  |  ------>   |     Kafka      |
+   | (lottery events) |            | user-events    |
+   +------------------+            +----------------+
+                                         ||
+                                         \/
+                               +----------------------+
+                               |    Kafka Consumer     |
+                               |  (aggregator + writer)|
+                               +----------------------+
+                               | - Writes to Postgres |
+                               | - Exposes metrics    |
+                               +----------------------+
+                                         ||
+                                         \/
+                     +----------------------------+
+                     |     Prometheus + Grafana    |
+                     | - Metrics, Alerts, Dashboards|
+                     +----------------------------+
+   
+```
 
 ### Assumptions
 
 *	Domain = lottery platform interactions (event_types = [ "login", "view_numbers", "ticket_purchased", "claim_reward", "logout" ])
 *	One Kafka topic for all user events
-*	Aggregation = hourly by event type
+*	Aggregation = hourly by event type, in Postgres
 *	Consumer does both ingestion and aggregation
 
-### Features
-
-*	Kafka-based event streaming
-*	Python-based real-time event consumption & metric aggregation
-*	Automated hourly metric flushing to a Postgres database
-*	Prometheus + Grafana observability setup
-*	Test suite with pytest and mocks
-*	Fully containerized via Docker
 
 ### Tech Stack
 
@@ -28,10 +43,11 @@ The pipeline includes data validation, Postgres DB for insights, and observabili
 *	Grafana
 *	Docker & Docker Compose
 
+
 ### Project Structure
 ```
 .
-├── producer/                # Kafka producer (simulates events from an event json file)
+├── producer/                # Kafka producer (simulates streaming events from an event json file)
 │   └── producer.py
 ├── consumer/                # Kafka consumer with core logic to process and validate events
 │   └── consumer.py
@@ -39,7 +55,7 @@ The pipeline includes data validation, Postgres DB for insights, and observabili
 │   └── schema.sql           # Schema for events, hourly_business_metrics, and some views
 ├── data/                    # Data Source and Error Output dir
 │   └── events.jsonl         # Sample event data (125 events)
-├── tests/                   # Unit tests for producer and consumer logic
+├── tests/                   # Unit tests for producer and consumer logic (with pytest and mocks)
 │   └── test_consumer.py
 ├── monitoring/              # Monitoring and Observability
 │   └── grafana              # Grafana dashboard config
@@ -47,11 +63,12 @@ The pipeline includes data validation, Postgres DB for insights, and observabili
 │                   └── dashboard.json      # Metrics dashboard config
 │           └── provisioning
 │   └── prometheus           # Prometheus config for logs and alerts
-├── docker-compose.yml       # For a fully-containerized setup and execution
+├── docker-compose.yml       # Fully-containerized setup and execution
 ├── Dockerfile               # Python app
 ├── requirements.txt         
 └── README.md
 ```
+
 
 ## Execution
 1. Setup:
@@ -94,30 +111,6 @@ select * from events;
 select * from hourly_business_metrics;
 select * from rolling_24h_metrics;
 select * from daily_event_summary;
-```
-
-## Flow Diagram
-```
-   +------------------+            +----------------+
-   |  Event Producer  |  ------>   |     Kafka      |
-   | (lottery events) |            | user-events    |
-   +------------------+            +----------------+
-                                         ||
-                                         \/
-                               +----------------------+
-                               |    Kafka Consumer     |
-                               |  (aggregator + writer)|
-                               +----------------------+
-                               | - Writes to Postgres |
-                               | - Exposes metrics    |
-                               +----------------------+
-                                         ||
-                                         \/
-                     +----------------------------+
-                     |     Prometheus + Grafana    |
-                     | - Metrics, Alerts, Dashboards|
-                     +----------------------------+
-   
 ```
 
 ## Future Enhancements
