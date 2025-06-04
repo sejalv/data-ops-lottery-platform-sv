@@ -38,7 +38,7 @@ This project, as a solution to Zeal's Case Study, processes real-time user inter
 
 *	Python 3.10
 *	Kafka
-*	PostgreSQL
+*	PostgreSQL 14
 *	Prometheus
 *	Grafana
 *	Docker & Docker Compose
