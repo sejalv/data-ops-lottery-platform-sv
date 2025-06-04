@@ -34,13 +34,9 @@ This project, as a solution to Zeal's Case Study, processes real-time user inter
 *	Consumer does both ingestion and aggregation
 
 
-### Tech Stack
+### Pre-requisites
 
 *	Python 3.10
-*	Kafka
-*	PostgreSQL 14
-*	Prometheus
-*	Grafana
 *	Docker & Docker Compose
 
 
@@ -51,7 +47,7 @@ This project, as a solution to Zeal's Case Study, processes real-time user inter
 │   └── producer.py
 ├── consumer/                # Kafka consumer with core logic to process and validate events
 │   └── consumer.py
-├── database/                # Postgres DB (events_db)
+├── database/                # PostgreSQL 14 (events_db)
 │   └── schema.sql           # Schema for events, hourly_business_metrics, and some views
 ├── data/                    # Data Source and Error Output dir
 │   └── events.jsonl         # Sample event data (125 events)
@@ -68,7 +64,6 @@ This project, as a solution to Zeal's Case Study, processes real-time user inter
 ├── requirements.txt         
 └── README.md
 ```
-
 
 ## Execution
 1. Setup:
@@ -103,6 +98,7 @@ docker-compose up --build
 * Total payouts from rewards
 * Count of ticket purchases and rewards per hour
 * Number of logins, unique users, and new sessions
+  
 ```
 psql -h localhost -p 5432 -U user -d events_db
 [user: password]
@@ -113,7 +109,8 @@ select * from rolling_24h_metrics;
 select * from daily_event_summary;
 ```
 
-## Future Enhancements
-* IaC and CI/CD workflows
-* Improved validation with tools like pydantic
-* Improved observability metrics for stream latency, eg. Prometheus gauge to show lag between event_timestamp and now() to measure freshness.
+## Notes and Future Enhancements
+* There might be a little lag in the consumer event count showing up on the Grafana dashboard, but eventually it tallies up (Producer Sent = Consumer Processed + Consumer Failed).
+* CI workflows with unit tests can be integrated in later.
+* Validation can be improved with tools like pydantic.
+* More observability metrics like stream latency, eg. Prometheus gauge to show lag between event_timestamp and now() to measure freshness, can be introduced later.
