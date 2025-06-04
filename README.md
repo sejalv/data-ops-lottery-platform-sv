@@ -35,11 +35,13 @@ The pipeline includes data validation, Postgres DB for insights, and observabili
 │   └── producer.py
 ├── consumer/                # Kafka consumer with core logic to process and validate events
 │   └── consumer.py
-├── data/                    # Data Source and Error Output 
-│   └── events.jsonl         # Sample event data
+├── database/                # Postgres DB (events_db)
+│   └── schema.sql           # Schema for events, hourly_business_metrics, and some views
+├── data/                    # Data Source and Error Output dir
+│   └── events.jsonl         # Sample event data (125 events)
 ├── tests/                   # Unit tests for producer and consumer logic
 │   └── test_consumer.py
-├── monitoring/              # Unit tests for producer and consumer logic
+├── monitoring/              # Monitoring and Observability
 │   └── grafana              # Grafana dashboard config
 │           └── dashboards
 │                   └── dashboard.json      # Metrics dashboard config
@@ -87,6 +89,7 @@ docker-compose up --build
 ```
 psql -h localhost -p 5432 -U user -d events_db
 [user: password]
+
 select * from events;
 select * from hourly_business_metrics;
 select * from rolling_24h_metrics;
