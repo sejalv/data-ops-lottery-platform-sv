@@ -36,7 +36,7 @@ This project, as a solution to Zeal's Case Study, processes real-time user inter
 
 ### Pre-requisites
 
-*	Python 3.10
+*	Python 3.10, Pytest
 *	Docker & Docker Compose
 
 
