@@ -78,6 +78,8 @@ pip install -r requirements.txt
 
 2. Run tests:
 ```bash
+pip install pytest
+
 PYTHONPATH=producer pytest -sv tests/test_producer.py
 
 PYTHONPATH=consumer pytest -sv tests/test_consumer.py
