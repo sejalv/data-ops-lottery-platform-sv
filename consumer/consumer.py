@@ -156,6 +156,7 @@ def main():
     consumer = KafkaConsumer(
         TOPIC,
         bootstrap_servers=KAFKA_BROKER,
+        group_id=GROUP_ID,
         auto_offset_reset="latest",
         enable_auto_commit=True,
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
@@ -169,6 +170,7 @@ def main():
     for message in consumer:
         try:
             event = message.value
+            logging.info(f"Listening to: {event}")
             if validate_event(event):
                 if ingest_event_raw(cursor, event):
                     process_event(event, business_stats)
