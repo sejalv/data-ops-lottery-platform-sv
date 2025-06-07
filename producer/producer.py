@@ -25,8 +25,8 @@ EVENTS_SENT.labels(status='failure')
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--file", type=str, default="data/events.jsonl", help="Path to input events file")
-    parser.add_argument("--error_file", type=str, default="data/bad_events.log", help="Path to bad events log")
+    parser.add_argument("--file", type=str, help="Path to input events file")
+    parser.add_argument("--error_file", type=str, help="Path to bad events log")
     parser.add_argument("--shuffle", action="store_true", help="Shuffle events before sending")
     parser.add_argument("--delay", type=float, default=1.0, help="Avg delay between events (in seconds)")
     return parser
